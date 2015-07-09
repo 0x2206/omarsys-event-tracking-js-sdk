@@ -1,0 +1,17 @@
+{
+  "name": "eventtrackingsdk",
+  "version": "0.0.0",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "qwest": "~1.7.0",
+    "node-uuid": "~1.4.3"
+  }
+}
