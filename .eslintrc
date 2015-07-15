@@ -8,5 +8,8 @@
       "named": "never"
     }],
     "space-before-blocks": [2, "always"]
+  },
+  "env": {
+      "node": true
   }
 }
