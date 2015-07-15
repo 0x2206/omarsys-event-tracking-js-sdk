@@ -1,12 +1,13 @@
 {
-  "name": "eventtrackingsdk",
+  "name": "cherrytech-event-tracking-js-sdk",
+  "description": "",
   "version": "0.0.0",
   "private": true,
+  "main": "src/main.js",
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
-    "src/bower_components",
     "test",
     "tests"
   ],

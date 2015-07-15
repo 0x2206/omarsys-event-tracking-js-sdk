@@ -1,24 +1,24 @@
 {
-  "name": "eventtrackingsdk",
+  "name": "cherrytech-event-tracking-js-sdk",
+  "description": "",
   "version": "0.0.0",
+  "private": true,
+  "main": "src/main.js",
   "dependencies": {
     "bower": "^1.4.1"
   },
   "devDependencies": {
-    "eslint": "^0.24.1",
-    "grunt": "~0.4.1",
-    "grunt-browserify": "^3.8.0",
-    "grunt-contrib-requirejs": "^0.4.4",
-    "grunt-contrib-uglify": "^0.9.1",
-    "grunt-contrib-watch": "^0.6.1",
-    "load-grunt-tasks": "~0.2.0",
-    "time-grunt": "^1.2.1"
+    "browserify": "^10.2.6",
+    "eslint": "^0.24.1"
   },
   "scripts": {
+    "build": "mkdir -p dist && browserify src/main.js -o dist/tracking.js",
+    "lint": "eslint src/",
     "postinstall": "bower install",
-    "lint": "eslint src/"
+    "prebuild": "npm run lint && npm test",
+    "test": "echo \"TODO: no test specified\" && exit 0"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=0.12.0"
   }
 }
