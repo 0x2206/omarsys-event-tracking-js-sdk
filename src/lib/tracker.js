@@ -40,7 +40,21 @@
         }
     }
 
+    Tracker.prototype.configure = configure;
     Tracker.prototype.track = track;
+
+    /**
+     * @param  {Object}  options
+     * @return {Tracker}
+     */
+    function configure(options) {
+        this.config = util.merge([
+            this.config,
+            util.whitelist(options, ['apiEndpoint', 'cookieName', 'domain'])
+        ]);
+
+        return this;
+    }
 
     /**
      * @param  {String}  eventName

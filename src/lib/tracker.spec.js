@@ -68,6 +68,74 @@ describe('Tracker', function () {
         });
     });
 
+    describe('#configure()', function () {
+        it('should merge passed params with current ones', function () {
+            trackerInstance.configure({
+                apiEndpoint: 'test_api_endpoint',
+                domain: 'test_domain',
+                cookieName: 'test_cookie_name'
+            });
+
+            assert.deepEqual(trackerInstance.config, {
+                apiEndpoint: 'test_api_endpoint',
+                domain: 'test_domain',
+                cookieName: 'test_cookie_name'
+            });
+        });
+
+        it('should set only whitelisted params, i.e. `apiEndpoint`, `domain` and `cookieName`', function () {
+            trackerInstance.configure({
+                apiEndpoint: 'test_api_endpoint',
+                domain: 'test_domain',
+                cookieName: 'test_cookie_name',
+                notWhitelistedProperty: 'value'
+            });
+
+            assert.strictEqual(trackerInstance.config.apiEndpoint, 'test_api_endpoint');
+            assert.strictEqual(trackerInstance.config.domain, 'test_domain');
+            assert.strictEqual(trackerInstance.config.cookieName, 'test_cookie_name');
+            assert.strictEqual(trackerInstance.config.hasOwnProperty('notWhitelistedProperty'), false);
+        });
+
+        it('should send overridden `domain` in subsequent requests once set', function (done) {
+            fakeResponse();
+
+            trackerInstance
+                .configure({
+                    domain: 'test_domain'
+                })
+                .track('e1')
+                .catch(done);
+
+            trackerInstance
+                .track('e2')
+                .then(function (response) {
+                    assert.strictEqual(response.config.params.host, 'test_domain');
+                    done();
+                })
+                .catch(done);
+        });
+
+
+        it('should use overridden cookie name', function () {
+            trackerInstance.configure({ cookieName: 'test_cookie' });
+            assert.strictEqual(trackerInstance.config.cookieName, 'test_cookie');
+        });
+
+        it('should use overridden API endpoint', function (done) {
+            fakeResponse();
+
+            trackerInstance
+                .configure({ apiEndpoint: 'test_api_endpoint' })
+                .track('e1')
+                .then(function (response) {
+                    assert.strictEqual(response.config.url, 'test_api_endpoint');
+                    done();
+                })
+                .catch(done);
+        });
+    });
+
     describe('#track()', function () {
         it('should throw when empty or non string event name is passed', function () {
             assert.throws(function () { trackerInstance.track(); });
