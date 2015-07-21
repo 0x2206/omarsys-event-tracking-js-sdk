@@ -1,5 +1,5 @@
 (function () {
     'use strict';
 
-    global.CherrytechEventTracking = module.exports = require('./core/sdk.js');
+    global.CherrytechEventTracking = module.exports = require('./lib/tracking.js');
 }());

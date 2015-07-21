@@ -8,3 +8,5 @@ bower_components
 !.gitkeep
 
 web/track.min.js
+coverage
+dist

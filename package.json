@@ -5,20 +5,42 @@
   "private": true,
   "main": "src/main.js",
   "dependencies": {
-    "bower": "^1.4.1"
+    "axios": "^0.5.4",
+    "bower": "^1.4.1",
+    "cookie-cutter": "^0.1.1",
+    "cookie-cutter-shim": "file:src/shims/cookie-cutter-shim",
+    "node-uuid": "^1.4.3"
   },
   "devDependencies": {
     "browserify": "^10.2.6",
-    "eslint": "^0.24.1"
+    "eslint": "^0.24.1",
+    "karma": "^0.13.0",
+    "karma-browserify": "^4.2.1",
+    "karma-coverage": "^0.4.2",
+    "karma-mocha": "^0.2.0",
+    "karma-phantomjs-launcher": "^0.2.0",
+    "karma-spec-reporter": "0.0.20",
+    "karma-threshold-reporter": "^0.1.15",
+    "mocha": "^2.2.5",
+    "phantomjs": "^1.9.17",
+    "uglify-js": "^2.4.23",
+    "uglifyify": "^3.0.1",
+    "watchify": "^3.2.3"
   },
   "scripts": {
-    "build": "mkdir -p dist && browserify src/main.js -o dist/tracking.js",
+    "build": "browserify -t uglifyify src/main.js | uglifyjs -c > dist/tracking.min.js",
+    "develop": "watchify src/main.js -o dist/tracking.js",
     "lint": "eslint src/",
-    "postinstall": "bower install",
-    "prebuild": "npm run lint && npm test",
-    "test": "echo \"TODO: no test specified\" && exit 0"
+    "prebuild": "mkdir -p dist && npm test",
+    "pretest": "npm run lint",
+    "test": "npm run test:node && npm run test:browser",
+    "test:browser": "node_modules/karma/bin/karma start karma.conf.js",
+    "test:node": "node_modules/.bin/mocha -R spec ./src/lib/*.spec.js"
   },
   "engines": {
     "node": ">=0.12.0"
+  },
+  "browser": {
+    "cookie-cutter-shim": "cookie-cutter"
   }
 }
