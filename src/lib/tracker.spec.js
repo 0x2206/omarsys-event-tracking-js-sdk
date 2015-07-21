@@ -66,6 +66,16 @@ describe('Tracker', function () {
             var t = new Tracker(' \n \t t1 \t \n ');
             assert.strictEqual(t.id, 't1');
         });
+
+        it('should have `identity` property that is null by default', function () {
+            assert.strictEqual(trackerInstance.hasOwnProperty('identity'), true);
+            assert.strictEqual(trackerInstance.identity, null);
+        });
+
+        it('should have `uid` property that is null by default', function () {
+            assert.strictEqual(trackerInstance.hasOwnProperty('uid'), true);
+            assert.strictEqual(trackerInstance.uid, null);
+        });
     });
 
     describe('#configure()', function () {
@@ -130,6 +140,88 @@ describe('Tracker', function () {
                 .track('e1')
                 .then(function (response) {
                     assert.strictEqual(response.config.url, 'test_api_endpoint');
+                    done();
+                })
+                .catch(done);
+        });
+    });
+
+    describe('#identify()', function () {
+        it('should exist and be a function', function () {
+            assert.strictEqual((typeof trackerInstance.identify), 'function');
+        });
+
+        it('should return Tracker instance', function () {
+            var t = new Tracker('id');
+            assert.strictEqual(trackerInstance.identify('uid'), trackerInstance);
+            assert.notStrictEqual(trackerInstance.identify('uid'), t);
+        });
+
+        it('should throw on non string `uid`', function () {
+            assert.throws(function () { trackerInstance.identify(true); });
+            assert.throws(function () { trackerInstance.identify(42); });
+            assert.throws(function () { trackerInstance.identify(undefined); });
+            assert.throws(function () { trackerInstance.identify([]); });
+            assert.throws(function () { trackerInstance.identify({}); });
+            assert.throws(function () { trackerInstance.identify(/lol/); });
+            assert.throws(function () { trackerInstance.identify(new Date()); });
+        });
+
+        it('should throw on `uid` being an empty string', function () {
+            assert.throws(function () { trackerInstance.identify(' \t \n '); });
+        });
+
+        it('should trim `uid`', function () {
+            trackerInstance.identify(' \t \n uid \n \t ');
+            assert.strictEqual(trackerInstance.uid, 'uid');
+        });
+
+        it('should throw on `identificationPayload` being non plain object (if it is defined)', function () {
+            assert.throws(function () { trackerInstance.identify('uid', false); });
+            assert.throws(function () { trackerInstance.identify('uid', 42); });
+            assert.throws(function () { trackerInstance.identify('uid', 'lol'); });
+            assert.throws(function () { trackerInstance.identify('uid', /lol/); });
+            assert.throws(function () { trackerInstance.identify('uid', new Date()); });
+            assert.throws(function () { trackerInstance.identify('uid', [1, 2, 3]); });
+            assert.doesNotThrow(function () { trackerInstance.identify('uid'); });
+            assert.doesNotThrow(function () { trackerInstance.identify('uid', undefined); });
+        });
+
+        it('should merge passed user identity payload with current one', function () {
+            trackerInstance
+                .identify('uid', { email: 'm@m.mm', name: 'name' })
+                .identify('uid', { email: 'm2@m.mm', user: 'user' });
+
+            assert.deepEqual(trackerInstance.identity, {
+                email: 'm2@m.mm',
+                user: 'user',
+                name: 'name'
+            });
+        });
+
+        it('should include passed `uid` when making XHR call', function (done) {
+            fakeResponse();
+
+            trackerInstance
+                .identify('test_uid')
+                .track('e1')
+                .then(function (response) {
+                    assert.strictEqual(response.config.params.uid, 'test_uid');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should prefix identification payload properry key with `ur_` and does not include original one', function (done) {
+            fakeResponse();
+
+            trackerInstance
+                .identify('test_uid', { mail: 'm@m.mm' })
+                .track('e1')
+                .then(function ok(response) {
+                    assert.strictEqual(response.config.params.hasOwnProperty('ur_mail'), true);
+                    assert.strictEqual(response.config.params.ur_mail, 'm@m.mm');
+                    assert.strictEqual(response.config.params.hasOwnProperty('mail'), false);
                     done();
                 })
                 .catch(done);

@@ -31,6 +31,8 @@
 
         this.id = id.trim();
         this.config = defaultConfig;
+        this.identity = null;
+        this.uid = null;
 
         // Create tracking cookie
         if (!cookieExists(this.config.cookieName)) {
@@ -41,6 +43,7 @@
     }
 
     Tracker.prototype.configure = configure;
+    Tracker.prototype.identify = identify;
     Tracker.prototype.track = track;
 
     /**
@@ -52,6 +55,35 @@
             this.config,
             util.whitelist(options, ['apiEndpoint', 'cookieName', 'domain'])
         ]);
+
+        return this;
+    }
+
+    /**
+     * @param  {String}  uid
+     * @param  {Object}  identificationPayload
+     * @return {Tracker}
+     */
+    function identify(uid, identificationPayload) {
+        if (!util.isString(uid)) {
+            throw new TypeError('`uid` has to be a string');
+        }
+
+        if (util.isEmpty(uid)) {
+            throw new TypeError('`uid` cannot be empty');
+        }
+
+        if (util.isDefined(identificationPayload) && !util.isPlainObject(identificationPayload)) {
+            throw new TypeError('`identificationPayload` has to be a plain object');
+        }
+
+        this.uid = uid.trim();
+
+        if (util.isDefined(identificationPayload)) {
+            // When merging for the first time convert to empty object
+            this.identity = this.identity || {};
+            this.identity = util.merge([this.identity, identificationPayload]);
+        }
 
         return this;
     }
@@ -86,8 +118,13 @@
                 cookie: cookie.get(this.config.cookieName),
                 event: eventName
             },
-            mapEventPayload(eventPayload)
+            mapEventPayload(eventPayload),
+            mapIdentificationPayload(this.identity)
         ]);
+
+        if (this.uid) {
+            xhrPayload = util.merge([xhrPayload, {uid: this.uid}]);
+        }
 
         return http({
             method: 'get',
@@ -98,6 +135,10 @@
 
     function mapEventPayload(payload) {
         return mapPayload(payload, 'ev_');
+    }
+
+    function mapIdentificationPayload(payload) {
+        return mapPayload(payload, 'ur_');
     }
 
     /**
