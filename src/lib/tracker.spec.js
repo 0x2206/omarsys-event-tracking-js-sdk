@@ -307,5 +307,25 @@ describe('Tracker', function () {
                 })
                 .catch(done);
         });
+
+        xit('should evaluate returned JavaScipt code', function (done) {
+            // Disabled as fakeResponse() won't set data payload when launching
+            // whole test suite. It works when test is launched alone. Need proper
+            // way of faking XHR responses...
+            fakeResponse({
+                actions: [{
+                    type: 'javascript',
+                    code: '(function () { return 40 + 2; })();'
+                }]
+            });
+
+            trackerInstance
+                .track('e1')
+                .then(function (response) {
+                    assert.strictEqual(response.evalResults[0], 42);
+                    done();
+                })
+                .catch(done);
+        });
     });
 });

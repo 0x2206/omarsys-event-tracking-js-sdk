@@ -130,6 +130,20 @@
             method: 'get',
             url: this.config.apiEndpoint,
             params: xhrPayload
+        })
+        .then(function (response) {
+            response.evalResults = [];
+
+            if (response && response.data && response.data.actions) {
+                response.data.actions.forEach(function (action) {
+                    if (action.type === 'javascript') {
+                        // Store eval results
+                        response.evalResults.push(eval(action.code)); // eslint-disable-line no-eval
+                    }
+                });
+            }
+
+            return response;
         });
     }
 
