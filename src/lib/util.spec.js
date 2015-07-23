@@ -94,12 +94,17 @@ describe('util', function () {
             assert.strictEqual(util.isPlainObject(Object.create(null)), true);
         });
 
-        it('should return false if non plain object passed (array, function, regexp, date)', function () {
+        it('should return false if non plain object passed', function () {
             assert.strictEqual(util.isPlainObject([1, 2, 3]), false);
             assert.strictEqual(util.isPlainObject(function () {}), false);
             assert.strictEqual(util.isPlainObject(/lol/), false);
             assert.strictEqual(util.isPlainObject(new RegExp('lol')), false);
             assert.strictEqual(util.isPlainObject(new Date()), false);
+            /* eslint-disable no-new-wrappers */
+            assert.strictEqual(util.isPlainObject(new String('lol')), false);
+            assert.strictEqual(util.isPlainObject(new Number(42)), false);
+            assert.strictEqual(util.isPlainObject(new Boolean(true)), false);
+            /* eslint-disable no-new-wrappers */
         });
 
         it('should return false if non object passed', function () {
@@ -108,6 +113,8 @@ describe('util', function () {
             assert.strictEqual(util.isPlainObject(42), false);
             assert.strictEqual(util.isPlainObject(Infinity), false);
             assert.strictEqual(util.isPlainObject('lol'), false);
+            assert.strictEqual(util.isPlainObject(undefined), false);
+            assert.strictEqual(util.isPlainObject(null), false);
         });
     });
 

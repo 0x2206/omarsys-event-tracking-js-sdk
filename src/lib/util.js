@@ -53,7 +53,16 @@
      * @return {Boolean}
      */
     function isPlainObject(value) {
-        return typeof value === 'object' && value !== null && !isArray(value) && !(value instanceof RegExp) && !(value instanceof Date);
+        if (value === null) {
+            return false;
+        }
+
+        // value = Object.create(null) case
+        if (typeof value === 'object' && !(value instanceof Object)) {
+            return true;
+        }
+
+        return typeof value === 'object' && value.constructor === Object;
     }
 
     /**
