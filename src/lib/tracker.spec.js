@@ -230,6 +230,60 @@ describe('Tracker', function () {
                 })
                 .catch(done);
         });
+
+        it('should reset `Tracker#uid` to default when successful call made', function (done) {
+            trackerInstance
+                .identify('test_uid')
+                .track('test_event')
+                .then(function () {
+                    assert.strictEqual(trackerInstance.uid, null);
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should reset `Tracker#identity` to default when successful call made', function (done) {
+            trackerInstance
+                .identify('test_uid')
+                .track('test_event')
+                .then(function () {
+                    assert.deepEqual(trackerInstance.identity, {});
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should not send `uid` on subsequent requests', function (done) {
+            trackerInstance
+                .identify('test_uid')
+                .track('test_event')
+                .then(function () {
+                    trackerInstance
+                        .track('test_event2')
+                        .then(function (response) {
+                            assert.strictEqual(response.config.params.hasOwnProperty('uid'), false);
+                            done();
+                        })
+                        .catch(done);
+                })
+                .catch(done);
+        });
+
+        it('should not send contents of `Tracker#identity` object on subsequent requests', function (done) {
+            trackerInstance
+                .identify('test_uid', { user: 'name' })
+                .track('test_event')
+                .then(function () {
+                    trackerInstance
+                        .track('test_event2')
+                        .then(function (response) {
+                            assert.strictEqual(response.config.params.hasOwnProperty('ur_user'), false);
+                            done();
+                        })
+                        .catch(done);
+                })
+                .catch(done);
+        });
     });
 
     describe('#track()', function () {

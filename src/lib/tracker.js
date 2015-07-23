@@ -112,6 +112,8 @@
             throw new TypeError('`eventPayload` cannot be an empty object');
         }
 
+        var self = this;
+
         var xhrPayload = util.merge([
             {
                 host: this.config.domain,
@@ -142,6 +144,11 @@
                     }
                 });
             }
+
+            // Reset identification related properties to default values
+            // as we don't want to send it to web services every time.
+            self.uid = null;
+            self.identity = {};
 
             return response;
         });
