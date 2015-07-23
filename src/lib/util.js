@@ -11,6 +11,9 @@
         whitelist: whitelist
     };
 
+    /**
+     * @return {String|undefined}
+     */
     function getHost() {
         // Browserify makes `global` an alias to `window` in browsers
         return global.location ? global.location.hostname : undefined;
@@ -24,6 +27,10 @@
         return Array.isArray(value);
     }
 
+    /**
+     * @param  {*} value
+     * @return {Boolean}
+     */
     function isDefined(value) {
         return value !== undefined;
     }
@@ -75,9 +82,9 @@
 
     /**
      * @description
-     * Shallow merge passed objects.
+     * Shallow merge passed objects and return new one.
      *
-     * @param {Array}   objects Collection of objects to be merged
+     * @param  {Array}  objects Collection of objects to be merged
      * @return {Object}
      */
     function merge(objects) {
@@ -107,6 +114,9 @@
     }
 
     /**
+     * @description
+     * Return new object containing whitelisted properties only.
+     *
      * @param  {Object} object
      * @param  {Array}  whiteList
      * @return {Object}

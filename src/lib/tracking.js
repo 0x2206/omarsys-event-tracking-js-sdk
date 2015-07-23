@@ -7,6 +7,10 @@
         createTracker: createTracker
     };
 
+    /**
+     * @param  {String}  id
+     * @return {Tracker}
+     */
     function createTracker(id) {
         return new Tracker(id);
     }
