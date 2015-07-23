@@ -95,7 +95,7 @@ describe('Tracker', function () {
             });
         });
 
-        it('should set only whitelisted params, i.e. `apiEndpoint`, `domain` and `cookieName`', function () {
+        it('should set only whitelisted params', function () {
             trackerInstance.configure({
                 apiEndpoint: 'test_api_endpoint',
                 domain: 'test_domain',
@@ -107,6 +107,7 @@ describe('Tracker', function () {
             assert.strictEqual(trackerInstance.config.apiEndpoint, 'test_api_endpoint');
             assert.strictEqual(trackerInstance.config.domain, 'test_domain');
             assert.strictEqual(trackerInstance.config.cookieName, 'test_cookie_name');
+            assert.strictEqual(trackerInstance.config.pageViewEventName, 'test_pv');
             assert.strictEqual(trackerInstance.config.hasOwnProperty('notWhitelistedProperty'), false);
         });
 
