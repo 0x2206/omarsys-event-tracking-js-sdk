@@ -83,13 +83,15 @@ describe('Tracker', function () {
             trackerInstance.configure({
                 apiEndpoint: 'test_api_endpoint',
                 domain: 'test_domain',
-                cookieName: 'test_cookie_name'
+                cookieName: 'test_cookie_name',
+                pageViewEventName: 'test_pv'
             });
 
             assert.deepEqual(trackerInstance.config, {
                 apiEndpoint: 'test_api_endpoint',
                 domain: 'test_domain',
-                cookieName: 'test_cookie_name'
+                cookieName: 'test_cookie_name',
+                pageViewEventName: 'test_pv'
             });
         });
 
@@ -98,7 +100,8 @@ describe('Tracker', function () {
                 apiEndpoint: 'test_api_endpoint',
                 domain: 'test_domain',
                 cookieName: 'test_cookie_name',
-                notWhitelistedProperty: 'value'
+                notWhitelistedProperty: 'value',
+                pageViewEventName: 'test_pv'
             });
 
             assert.strictEqual(trackerInstance.config.apiEndpoint, 'test_api_endpoint');
@@ -323,6 +326,33 @@ describe('Tracker', function () {
                 .track('e1')
                 .then(function (response) {
                     assert.strictEqual(response.evalResults[0], 42);
+                    done();
+                })
+                .catch(done);
+        });
+    });
+
+    describe('#trackPageView()', function () {
+        it('should exist', function () {
+            assert.strictEqual((typeof trackerInstance.trackPageView), 'function');
+        });
+
+        it('should send default event name (page_view) on XHR call', function (done) {
+            trackerInstance
+                .trackPageView()
+                .then(function (response) {
+                    assert.strictEqual(response.config.params.event, 'page_view');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should send overridden event name on XHR call', function (done) {
+            trackerInstance
+                .configure({ pageViewEventName: 'test_pv' })
+                .trackPageView()
+                .then(function (response) {
+                    assert.strictEqual(response.config.params.event, 'test_pv');
                     done();
                 })
                 .catch(done);

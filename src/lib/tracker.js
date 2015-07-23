@@ -11,7 +11,8 @@
     var defaultConfig = {
         apiEndpoint: 'localhost',
         domain: util.getHost() || 'localhost',
-        cookieName: 'ct_tracker'
+        cookieName: 'ct_tracker',
+        pageViewEventName: 'page_view'
     };
 
     /**
@@ -45,6 +46,7 @@
     Tracker.prototype.configure = configure;
     Tracker.prototype.identify = identify;
     Tracker.prototype.track = track;
+    Tracker.prototype.trackPageView = trackPageView;
 
     /**
      * @param  {Object}  options
@@ -53,7 +55,7 @@
     function configure(options) {
         this.config = util.merge([
             this.config,
-            util.whitelist(options, ['apiEndpoint', 'cookieName', 'domain'])
+            util.whitelist(options, ['apiEndpoint', 'cookieName', 'domain', 'pageViewEventName'])
         ]);
 
         return this;
@@ -172,6 +174,14 @@
         }
 
         return out;
+    }
+
+    /**
+     * @param  {Object}  payload
+     * @return {Promise}
+     */
+    function trackPageView(payload) {
+        return this.track(this.config.pageViewEventName, payload);
     }
 
     /**
