@@ -22,17 +22,17 @@
      * @throws
      */
     function Tracker(id) {
-        if (util.isString(id) && util.isEmpty(id)) {
-            throw new TypeError('`id` cannot be an empty string');
-        }
-
         if (!util.isString(id)) {
             throw new TypeError('`id` has to be a string');
         }
 
+        if (util.isEmpty(id)) {
+            throw new TypeError('`id` cannot be empty');
+        }
+
         this.id = id.trim();
         this.config = defaultConfig;
-        this.identity = null;
+        this.identity = {};
         this.uid = null;
 
         // Create tracking cookie
@@ -63,7 +63,7 @@
 
     /**
      * @param  {String}  uid
-     * @param  {Object}  identificationPayload
+     * @param  {Object}  [identificationPayload]
      * @return {Tracker}
      */
     function identify(uid, identificationPayload) {
@@ -82,8 +82,6 @@
         this.uid = uid.trim();
 
         if (util.isDefined(identificationPayload)) {
-            // When merging for the first time convert to empty object
-            this.identity = this.identity || {};
             this.identity = util.merge([this.identity, identificationPayload]);
         }
 
@@ -177,7 +175,7 @@
     }
 
     /**
-     * @param  {Object}  payload
+     * @param  {Object}  [payload]
      * @return {Promise}
      */
     function trackPageView(payload) {
@@ -194,6 +192,6 @@
     function cookieExists(cookieName) {
         // That's not entirely true as cookie can have undefined value
         // but we treat it as non existent in that case.
-        return cookie.get(cookieName) !== undefined ? true : false;
+        return cookie.get(cookieName) !== undefined;
     }
 }());

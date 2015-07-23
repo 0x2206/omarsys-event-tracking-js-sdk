@@ -67,9 +67,9 @@ describe('Tracker', function () {
             assert.strictEqual(t.id, 't1');
         });
 
-        it('should have `identity` property that is null by default', function () {
+        it('should have `identity` property that is empty object by default', function () {
             assert.strictEqual(trackerInstance.hasOwnProperty('identity'), true);
-            assert.strictEqual(trackerInstance.identity, null);
+            assert.deepEqual(trackerInstance.identity, {});
         });
 
         it('should have `uid` property that is null by default', function () {
