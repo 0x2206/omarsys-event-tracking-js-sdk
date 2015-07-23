@@ -62,7 +62,7 @@ describe('Tracker', function () {
             /* eslint-enable no-new */
         });
 
-        it('should trim passed id', function () {
+        it('should trim passed `id`', function () {
             var t = new Tracker(' \n \t t1 \t \n ');
             assert.strictEqual(t.id, 't1');
         });
@@ -216,7 +216,7 @@ describe('Tracker', function () {
                 .catch(done);
         });
 
-        it('should prefix identification payload properry key with `ur_` and does not include original one', function (done) {
+        it('should prefix identification payload property key with `ur_` and does not include original one', function (done) {
             fakeResponse();
 
             trackerInstance
@@ -354,7 +354,7 @@ describe('Tracker', function () {
                 .catch(done);
         });
 
-        it('should always inclue `cookie` parameter when making XHR call', function (done) {
+        it('should always include `cookie` parameter when making XHR call', function (done) {
             fakeResponse();
 
             trackerInstance

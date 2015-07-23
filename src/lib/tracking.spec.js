@@ -7,7 +7,7 @@ describe('Tracking', function () {
     var Tracker = require('./tracker');
 
     describe('#createTracker()', function () {
-        it('creates new tracker instance', function () {
+        it('should create new Tracker instance', function () {
             var t = Tracking.createTracker('id');
             assert.strictEqual((t instanceof Tracker), true);
         });
