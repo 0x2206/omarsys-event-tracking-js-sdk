@@ -120,8 +120,8 @@
                 cookie: cookie.get(this.config.cookieName),
                 event: eventName
             },
-            mapEventPayload(eventPayload),
-            mapIdentificationPayload(this.identity)
+            prefixObjectKeys(eventPayload, 'ev_'),
+            prefixObjectKeys(this.identity, 'ur_')
         ]);
 
         if (this.uid) {
@@ -154,33 +154,6 @@
         });
     }
 
-    function mapEventPayload(payload) {
-        return mapPayload(payload, 'ev_');
-    }
-
-    function mapIdentificationPayload(payload) {
-        return mapPayload(payload, 'ur_');
-    }
-
-    /**
-     * @param  {Object} payload
-     * @param  {String} prefix
-     * @return {Object}
-     */
-    function mapPayload(payload, prefix) {
-        prefix = prefix || '';
-
-        var out = {};
-
-        for (var key in payload) {
-            if (payload.hasOwnProperty(key)) {
-                out[prefix + key] = payload[key];
-            }
-        }
-
-        return out;
-    }
-
     /**
      * @param  {Object}  [payload]
      * @return {Promise}
@@ -200,5 +173,27 @@
         // That's not entirely true as cookie can have undefined value
         // but we treat it as non existent in that case.
         return cookie.get(cookieName) !== undefined;
+    }
+
+    /**
+     * @description
+     * Returns new prefixed object.
+     *
+     * @param  {Object} object
+     * @param  {String} prefix
+     * @return {Object}
+     */
+    function prefixObjectKeys(object, prefix) {
+        prefix = prefix || '';
+
+        var out = {};
+
+        for (var key in object) {
+            if (object.hasOwnProperty(key)) {
+                out[prefix + key] = object[key];
+            }
+        }
+
+        return out;
     }
 }());
