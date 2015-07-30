@@ -26,6 +26,6 @@ var Tracking = require('cherrytech-event-tracking-js-sdk');
 ## Contributing
 
 * To test `npm test`.
-* To build library and loader `npm run build`.
+* To build library and loader `npm run build -- --endpoint=event-tracking-endpoint.domain`.
 * Follow [commit messages guide line](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#-git-commit-guidelines).
 * Package follows [Semantic Versioning](http://semver.org/) rules.
