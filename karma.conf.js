@@ -34,7 +34,7 @@ module.exports = function (config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['spec', 'threshold', 'coverage'],
+        reporters: ['spec', 'threshold', 'coverage', 'junit'],
 
 
         // web server port
@@ -68,6 +68,10 @@ module.exports = function (config) {
             transform: [istanbul({
                 ignore: ['**/*.spec.js']
             })]
+        },
+
+        junitReporter: {
+            outputDir: './reports/junit'
         },
 
         thresholdReporter: {

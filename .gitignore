@@ -7,6 +7,6 @@ bower_components
 .settings
 !.gitkeep
 
-web/track.min.js
 coverage
 dist
+reports
