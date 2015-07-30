@@ -56,6 +56,6 @@
 
     // Async load tracking library
     script.async = 1;
-    script.src = '//localhost/tracking.min.js';
+    script.src = '//@@API_ENDPOINT@@/tracking.min.js';
     doc.getElementsByTagName('head')[0].appendChild(script);
 }(/* 'tracker1', 'tracker2', ... */));

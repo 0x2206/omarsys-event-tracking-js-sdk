@@ -25,13 +25,15 @@
     "karma-spec-reporter": "0.0.20",
     "karma-threshold-reporter": "^0.1.15",
     "mocha": "^2.2.5",
+    "nconf": "^0.7.1",
     "phantomjs": "^1.9.17",
     "phantomjs-polyfill": "0.0.1",
+    "replace": "^0.3.0",
     "uglify-js": "^2.4.23",
     "uglifyify": "^3.0.1"
   },
   "scripts": {
-    "build": "npm run build:lib && npm run build:loader",
+    "build": "npm run build:lib && npm run build:loader && bin/replacer",
     "build:lib": "browserify -t uglifyify src/main.js | uglifyjs -c -m > dist/tracking.min.js",
     "build:loader": "uglifyjs src/loader.js -o dist/loader.min.js -c -m",
     "clean": "rm -rf ./dist/*",

@@ -9,7 +9,7 @@
     module.exports = Tracker;
 
     var defaultConfig = {
-        apiEndpoint: 'localhost',
+        apiEndpoint: '@@API_ENDPOINT@@',
         domain: util.getHost() || 'localhost',
         cookieName: 'ct_tracker',
         pageViewEventName: 'page_view'
@@ -131,7 +131,7 @@
 
         return this.xhr({
             method: 'get',
-            url: this.config.apiEndpoint,
+            url: '//' + this.config.apiEndpoint + '/track.php',
             params: xhrPayload
         })
         .then(function (response) {

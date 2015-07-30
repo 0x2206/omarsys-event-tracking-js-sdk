@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+
+var replace = require('replace');
+var nconf = require('nconf');
+
+var prefix = '@@';
+var suffix = prefix;
+
+nconf.argv()
+    .defaults({
+        endpoint: 'localhost'
+    });
+
+replace({
+    regex: prefix + 'API_ENDPOINT' + suffix,
+    replacement: nconf.get('endpoint'),
+    paths: ['dist/'],
+    silent: false,
+    recursive: true
+});
