@@ -34,6 +34,7 @@
         this.config = defaultConfig;
         this.identity = {};
         this.uid = null;
+        this.xhr = http;
 
         // Create tracking cookie
         if (!cookieExists(this.config.cookieName)) {
@@ -128,7 +129,7 @@
             xhrPayload = util.merge([xhrPayload, {uid: this.uid}]);
         }
 
-        return http({
+        return this.xhr({
             method: 'get',
             url: this.config.apiEndpoint,
             params: xhrPayload

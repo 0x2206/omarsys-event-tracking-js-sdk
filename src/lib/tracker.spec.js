@@ -2,40 +2,15 @@ describe('Tracker', function () {
     'use strict';
 
     var assert = require('assert');
-    var axios = require('axios');
+    var axiosmock = require('./axios-mock');
 
     var Tracker = require('./tracker');
     var trackerInstance;
 
     beforeEach(function () {
         trackerInstance = new Tracker('t1');
+        trackerInstance.xhr = axiosmock.create();
     });
-
-    /**
-     * @description
-     * Fake success web services response
-     *
-     * @todo
-     * Once it's possible use https://github.com/mzabriskie/axios/issues/40
-     *
-     * @param  {*} data Response payload
-     * @return {Promise}
-     */
-    function fakeResponse(data) {
-        axios.interceptors.response.use(function ok(response) {
-            return response;
-        }, function error(response) {
-            // As we're calling non existing server axios rejects promise
-            // so we need to resolve it with fake positive response.
-            response.data = data || null;
-            response.status = 200;
-            response.statusText = 'OK';
-            response.headers['content-length'] = 0;
-            response.headers['content-type'] = 'application/json';
-
-            return Promise.resolve(response);
-        });
-    }
 
     describe('constructor', function () {
         it('should throw when empty string passed for `id`', function () {
@@ -112,8 +87,6 @@ describe('Tracker', function () {
         });
 
         it('should send overridden `domain` in subsequent requests once set', function (done) {
-            fakeResponse();
-
             trackerInstance
                 .configure({
                     domain: 'test_domain'
@@ -137,8 +110,6 @@ describe('Tracker', function () {
         });
 
         it('should use overridden API endpoint', function (done) {
-            fakeResponse();
-
             trackerInstance
                 .configure({ apiEndpoint: 'test_api_endpoint' })
                 .track('e1')
@@ -204,8 +175,6 @@ describe('Tracker', function () {
         });
 
         it('should include passed `uid` when making XHR call', function (done) {
-            fakeResponse();
-
             trackerInstance
                 .identify('test_uid')
                 .track('e1')
@@ -217,8 +186,6 @@ describe('Tracker', function () {
         });
 
         it('should prefix identification payload property key with `ur_` and does not include original one', function (done) {
-            fakeResponse();
-
             trackerInstance
                 .identify('test_uid', { mail: 'm@m.mm' })
                 .track('e1')
@@ -298,8 +265,6 @@ describe('Tracker', function () {
         });
 
         it('should send XHR as GET', function (done) {
-            fakeResponse();
-
             trackerInstance
                 .track('e1')
                 .then(function ok(response) {
@@ -314,8 +279,6 @@ describe('Tracker', function () {
         });
 
         it('should prefix payload property key event with `uv_` and does not include original one', function (done) {
-            fakeResponse();
-
             trackerInstance
                 .track('e1', {ev1: 'val1'})
                 .then(function ok(response) {
@@ -343,8 +306,6 @@ describe('Tracker', function () {
         });
 
         it('should always include `domain` parameter when making XHR call', function (done) {
-            fakeResponse();
-
             trackerInstance
                 .track('e1')
                 .then(function (response) {
@@ -355,8 +316,6 @@ describe('Tracker', function () {
         });
 
         it('should always include `cookie` parameter when making XHR call', function (done) {
-            fakeResponse();
-
             trackerInstance
                 .track('e1')
                 .then(function (response) {
@@ -366,11 +325,8 @@ describe('Tracker', function () {
                 .catch(done);
         });
 
-        xit('should evaluate returned JavaScipt code', function (done) {
-            // Disabled as fakeResponse() won't set data payload when launching
-            // whole test suite. It works when test is launched alone. Need proper
-            // way of faking XHR responses...
-            fakeResponse({
+        it('should evaluate returned JavaScipt code', function (done) {
+            trackerInstance.xhr = axiosmock.createWithResponseData({
                 actions: [{
                     type: 'javascript',
                     code: '(function () { return 40 + 2; })();'

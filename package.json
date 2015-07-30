@@ -23,6 +23,7 @@
     "karma-threshold-reporter": "^0.1.15",
     "mocha": "^2.2.5",
     "phantomjs": "^1.9.17",
+    "phantomjs-polyfill": "0.0.1",
     "uglify-js": "^2.4.23",
     "uglifyify": "^3.0.1"
   },
