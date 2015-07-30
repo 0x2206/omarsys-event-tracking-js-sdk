@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "browserify": "^10.2.6",
+    "browserify-istanbul": "^0.2.1",
     "eslint": "^0.24.1",
     "karma": "^0.13.0",
     "karma-browserify": "^4.2.1",

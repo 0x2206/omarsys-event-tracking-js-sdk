@@ -1,6 +1,8 @@
-module.exports = function (config) {
-    'use strict';
+'use strict';
 
+var istanbul = require('browserify-istanbul');
+
+module.exports = function (config) {
     config.set({
 
         // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -25,8 +27,7 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'src/**/*.js': ['browserify'],
-            'src/**/!(*spec).js': ['coverage']
+            'src/**/*.js': ['browserify']
         },
 
 
@@ -62,11 +63,18 @@ module.exports = function (config) {
         // if true, Karma captures browsers, runs the tests and exits
         singleRun: true,
 
+        browserify: {
+            debug: true,
+            transform: [istanbul({
+                ignore: ['**/*.spec.js']
+            })]
+        },
+
         thresholdReporter: {
-            statements: 90,
-            branches: 60,
-            functions: 85,
-            lines: 90
+            statements: 85,
+            branches: 80,
+            functions: 80,
+            lines: 85
         }
     });
 };
