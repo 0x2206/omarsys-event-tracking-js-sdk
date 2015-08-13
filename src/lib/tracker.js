@@ -131,7 +131,7 @@
 
         return this.xhr({
             method: 'get',
-            url: '//' + this.config.apiEndpoint + '/track.php',
+            url: '//' + this.config.apiEndpoint + '/',
             params: xhrPayload
         })
         .then(function (response) {

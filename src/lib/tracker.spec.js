@@ -114,7 +114,7 @@ describe('Tracker', function () {
                 .configure({ apiEndpoint: 'test_api_endpoint' })
                 .track('e1')
                 .then(function (response) {
-                    assert.strictEqual(response.config.url, '//test_api_endpoint/track.php');
+                    assert.strictEqual(response.config.url, '//test_api_endpoint/');
                     done();
                 })
                 .catch(done);
