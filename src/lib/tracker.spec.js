@@ -305,6 +305,11 @@ describe('Tracker', function () {
             assert.doesNotThrow(function () { trackerInstance.track('e1', {a: 'a1'}); });
         });
 
+        it('should not throw when payload is an empty object', function () {
+            assert.doesNotThrow(function () { trackerInstance.track('e1', {}); });
+            assert.doesNotThrow(function () { trackerInstance.track('e1', Object.create(null)); });
+        });
+
         it('should always include `domain` parameter when making XHR call', function (done) {
             trackerInstance
                 .track('e1')

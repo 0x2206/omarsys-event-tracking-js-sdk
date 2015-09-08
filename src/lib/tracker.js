@@ -109,10 +109,6 @@
             throw new TypeError('`eventPayload` has to be an object');
         }
 
-        if (util.isDefined(eventPayload) && util.isPlainObject(eventPayload) && util.isEmpty(eventPayload)) {
-            throw new TypeError('`eventPayload` cannot be an empty object');
-        }
-
         var self = this;
 
         var xhrPayload = util.merge([
