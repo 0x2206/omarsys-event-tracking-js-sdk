@@ -4,7 +4,7 @@ JavaScript client library for CherryTech Event Tracking system.
 
 ## Usage
 
-** Web browser: **
+**Web browser:**
 
 * `bower install cherrytech-event-tracking-js-sdk --save`.
 
@@ -14,7 +14,7 @@ JavaScript client library for CherryTech Event Tracking system.
 
 * `npm install cherrytech-event-tracking-js-sdk --save` to use in custom build process. _NOTE_: Building for web browser requires transforming this CommonJS package into browser friendly one, e.g. using [Browserify](http://browserify.org/).
 
-** Node.js: **
+**Node.js:**
 ```
 npm install cherrytech-event-tracking-js-sdk --save
 ```
