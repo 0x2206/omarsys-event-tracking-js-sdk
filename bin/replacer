@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+'use strict';
+
 var replace = require('replace');
 var nconf = require('nconf');
 
