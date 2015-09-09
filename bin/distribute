@@ -1,0 +1,143 @@
+#!/usr/bin/env node
+
+'use strict';
+
+var Promise = require('bluebird');
+var fs = Promise.promisifyAll(require('fs'));
+var execFile = require('child_process').execFile;
+var path = require('path');
+var util = require('util');
+var nconf = require('nconf');
+var semver = require('semver');
+var CWD = process.cwd();
+nconf.argv().defaults({ bump: null });
+
+(function init() {
+    if (validIdentifiers().indexOf(bumpIdentifier()) < 0) {
+        throw new TypeError('`bump` argument is invalid: ' + bumpIdentifier() + '. Use one of: ' + validIdentifiers().join(', ') + '.');
+    }
+
+    storeVersion(nextVersion(currentVersion(), bumpIdentifier()));
+}());
+
+/**
+ * @param {String} version
+ * @returns {Promise}
+ */
+function storeVersion(version) {
+    util.log('Preparing version', version, 'for distribution...');
+
+    return storeNpmVersion(version)
+        .then(function () {
+            return storeBowerVersion(version);
+        })
+        .then(addAllFiles)
+        .then(function () {
+            return commitAllChanges(version);
+        })
+        .then(function () {
+            return tagRelease(version);
+        })
+        .catch(util.log.bind(util))
+        .finally(function () {
+            util.log('Done.')
+        });
+}
+
+/**
+ * @returns {String}
+ */
+function bumpIdentifier() {
+    return nconf.get('bump');
+}
+
+/**
+ * @returns {String}
+ */
+function commitMessageTemplate() {
+    return 'Release %s';
+}
+
+/**
+ * @returns {String[]}
+ */
+function validIdentifiers() {
+    return ['major', 'minor', 'patch'];
+}
+
+/**
+ * @returns {String}
+ */
+function currentVersion() {
+    return require(path.join(CWD, 'package.json')).version;
+}
+
+/**
+ * @param {String} current
+ * @param {String} identifier
+ * @returns {String}
+ */
+function nextVersion(current, identifier) {
+    return semver.inc(current, identifier);
+}
+
+/**
+ * @param {String} version
+ * @returns {Promise}
+ */
+function storeNpmVersion(version) {
+    // `npm version ...` handles npm-shrinkwrap.json automatically
+    return promiseFromChildProcess(execFile('npm', ['version', version, '--no-git-tag-version']));
+}
+
+/**
+ * @param {String} version
+ * @returns {Promise}
+ */
+function storeBowerVersion(version) {
+    var fileName = 'bower.json';
+    var filePath = path.join(CWD, fileName);
+    var fileContent;
+
+    if (fs.existsSync(filePath)) {
+        fileContent = require(filePath);
+        fileContent.version = version;
+        return fs.writeFileAsync(fileName, JSON.stringify(fileContent, null, 2));
+    }
+
+    return Promise.resolve();
+}
+
+/**
+ * @returns {Promise}
+ */
+function addAllFiles() {
+    return promiseFromChildProcess(execFile('git', ['add', '-A']));
+}
+
+/**
+ * @param {String} version
+ * @returns {Promise}
+ */
+function commitAllChanges(version) {
+    return promiseFromChildProcess(execFile('git', ['commit', '-m', util.format(commitMessageTemplate(), version)]));
+}
+
+/**
+ * @param {String} version
+ * @returns {Promise}
+ */
+function tagRelease(version) {
+    return promiseFromChildProcess(execFile('git', ['tag', '-a', version, '-m', version]));
+}
+
+/**
+ * @param {ChildProcess} child
+ * @returns {Promise}
+ */
+function promiseFromChildProcess(child) {
+    return new Promise(function (resolve, reject) {
+        child.addListener('exit', resolve);
+        child.addListener('error', reject);
+    });
+}
