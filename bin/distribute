@@ -14,7 +14,7 @@ nconf.argv().defaults({ bump: null });
 
 (function init() {
     if (validIdentifiers().indexOf(bumpIdentifier()) < 0) {
-        throw new TypeError('`bump` argument is invalid: ' + bumpIdentifier() + '. Use one of: ' + validIdentifiers().join(', ') + '.');
+        throw new TypeError(util.format(invalidArgumentMessageTemplate(), 'bump', validIdentifiers().join(', ')));
     }
 
     storeVersion(nextVersion(currentVersion(), bumpIdentifier()));
@@ -25,7 +25,7 @@ nconf.argv().defaults({ bump: null });
  * @returns {Promise}
  */
 function storeVersion(version) {
-    util.log('Preparing version', version, 'for distribution...');
+    util.log(util.format(startMessageTemplate(), version));
 
     return storeNpmVersion(version)
         .then(function () {
@@ -40,7 +40,7 @@ function storeVersion(version) {
         })
         .catch(util.log.bind(util))
         .finally(function () {
-            util.log('Done.');
+            util.log(endMessageTemplate());
         });
 }
 
@@ -54,8 +54,29 @@ function bumpIdentifier() {
 /**
  * @returns {String}
  */
+function invalidArgumentMessageTemplate() {
+    return '`%s` argument is invalid. Use one of: %s.';
+}
+
+/**
+ * @returns {String}
+ */
 function commitMessageTemplate() {
     return 'Release %s';
+}
+
+/**
+ * @returns {String}
+ */
+function startMessageTemplate() {
+    return 'Preparing version %s for distribution...';
+}
+
+/**
+ * @returns {String}
+ */
+function endMessageTemplate() {
+    return 'Done.';
 }
 
 /**
