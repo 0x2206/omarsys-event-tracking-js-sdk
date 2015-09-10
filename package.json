@@ -40,7 +40,7 @@
     "build:loader": "uglifyjs src/loader.js -o dist/loader.min.js -c -m",
     "clean": "rm -rf ./dist/*",
     "distribute": "bin/distribute",
-    "lint": "eslint src/",
+    "lint": "eslint src/ bin/*",
     "prebuild": "npm test && npm run clean && mkdir -p ./dist",
     "pretest": "npm run lint",
     "test": "npm run test:node && npm run test:browser",

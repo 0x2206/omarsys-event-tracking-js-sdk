@@ -40,7 +40,7 @@ function storeVersion(version) {
         })
         .catch(util.log.bind(util))
         .finally(function () {
-            util.log('Done.')
+            util.log('Done.');
         });
 }
 
