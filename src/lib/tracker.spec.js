@@ -9,6 +9,7 @@ describe('Tracker', function () {
 
     beforeEach(function () {
         trackerInstance = new Tracker('t1');
+        trackerInstance.configure({ apiEndpoint: '//test_api_endpoint' });
         trackerInstance.xhr = axiosmock.create();
     });
 
@@ -111,10 +112,10 @@ describe('Tracker', function () {
 
         it('should use overridden API endpoint', function (done) {
             trackerInstance
-                .configure({ apiEndpoint: 'test_api_endpoint' })
+                .configure({ apiEndpoint: '//test_api_endpoint2' })
                 .track('e1')
                 .then(function (response) {
-                    assert.strictEqual(response.config.url, '//test_api_endpoint/');
+                    assert.strictEqual(response.config.url, '//test_api_endpoint2');
                     done();
                 })
                 .catch(done);
@@ -303,6 +304,18 @@ describe('Tracker', function () {
             assert.throws(function () { trackerInstance.track('e1', []); });
             assert.throws(function () { trackerInstance.track('e1', [1, 2, 3]); });
             assert.doesNotThrow(function () { trackerInstance.track('e1', {a: 'a1'}); });
+        });
+
+        it('should not throw when payload is an empty object', function () {
+            assert.doesNotThrow(function () { trackerInstance.track('e1', {}); });
+            assert.doesNotThrow(function () { trackerInstance.track('e1', Object.create(null)); });
+        });
+
+        it('should throw when API endpoint has not being configured while sending event track', function () {
+            var tracker = new Tracker('t1');
+            assert.throws(function () {
+                tracker.track('e1');
+            });
         });
 
         it('should always include `domain` parameter when making XHR call', function (done) {

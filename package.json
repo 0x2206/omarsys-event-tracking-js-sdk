@@ -1,6 +1,6 @@
 {
   "name": "cherrytech-event-tracking-js-sdk",
-  "description": "",
+  "description": "JavaScript client library for CherryTech Event Tracking system",
   "version": "0.0.0",
   "private": true,
   "main": "src/main.js",
@@ -12,6 +12,7 @@
     "node-uuid": "^1.4.3"
   },
   "devDependencies": {
+    "bluebird": "^2.10.0",
     "browserify": "^10.2.6",
     "browserify-istanbul": "^0.2.1",
     "eslint": "^0.24.1",
@@ -28,16 +29,17 @@
     "nconf": "^0.7.1",
     "phantomjs": "^1.9.17",
     "phantomjs-polyfill": "0.0.1",
-    "replace": "^0.3.0",
+    "semver": "^5.0.1",
     "uglify-js": "^2.4.23",
     "uglifyify": "^3.0.1"
   },
   "scripts": {
-    "build": "npm run build:lib && npm run build:loader && bin/replacer",
+    "build": "npm run build:lib && npm run build:loader",
     "build:lib": "browserify -t uglifyify src/main.js | uglifyjs -c -m > dist/tracking.min.js",
     "build:loader": "uglifyjs src/loader.js -o dist/loader.min.js -c -m",
     "clean": "rm -rf ./dist/*",
-    "lint": "eslint src/",
+    "distribute": "bin/distribute",
+    "lint": "eslint src/ bin/*",
     "prebuild": "npm test && npm run clean && mkdir -p ./dist",
     "pretest": "npm run lint",
     "test": "npm run test:node && npm run test:browser",

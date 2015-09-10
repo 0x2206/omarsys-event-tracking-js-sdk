@@ -9,7 +9,7 @@
     module.exports = Tracker;
 
     var defaultConfig = {
-        apiEndpoint: '@@API_ENDPOINT@@',
+        apiEndpoint: undefined,
         domain: util.getHost() || 'localhost',
         cookieName: 'ct_tracker',
         pageViewEventName: 'page_view'
@@ -109,8 +109,8 @@
             throw new TypeError('`eventPayload` has to be an object');
         }
 
-        if (util.isDefined(eventPayload) && util.isPlainObject(eventPayload) && util.isEmpty(eventPayload)) {
-            throw new TypeError('`eventPayload` cannot be an empty object');
+        if (!util.isDefined(this.config.apiEndpoint)) {
+            throw new Error('`API endpoint` for tracker `' + this.id + '` is undefined. Configure it properly to use tracking.');
         }
 
         var self = this;
@@ -131,7 +131,7 @@
 
         return this.xhr({
             method: 'get',
-            url: '//' + this.config.apiEndpoint + '/',
+            url: this.config.apiEndpoint,
             params: xhrPayload
         })
         .then(function (response) {
