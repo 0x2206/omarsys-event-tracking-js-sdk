@@ -12,9 +12,9 @@
     "node-uuid": "^1.4.3"
   },
   "devDependencies": {
-    "bluebird": "^2.10.0",
     "browserify": "^10.2.6",
     "browserify-istanbul": "^0.2.1",
+    "ct-distribute": "git+ssh://git@stash.cherrytech.com:7999/bow/ct-distribute.git#0.1.0",
     "eslint": "^0.24.1",
     "git-scripts": "^0.2.1",
     "karma": "^0.13.0",
@@ -26,10 +26,8 @@
     "karma-spec-reporter": "0.0.20",
     "karma-threshold-reporter": "^0.1.15",
     "mocha": "^2.2.5",
-    "nconf": "^0.7.1",
     "phantomjs": "^1.9.17",
     "phantomjs-polyfill": "0.0.1",
-    "semver": "^5.0.1",
     "uglify-js": "^2.4.23",
     "uglifyify": "^3.0.1"
   },
@@ -38,8 +36,8 @@
     "build:lib": "browserify -t uglifyify src/main.js | uglifyjs -c -m > dist/tracking.min.js",
     "build:loader": "uglifyjs src/loader.js -o dist/loader.min.js -c -m",
     "clean": "rm -rf ./dist/*",
-    "distribute": "bin/distribute",
-    "lint": "eslint src/ bin/*",
+    "distribute": "distribute",
+    "lint": "eslint src/",
     "prebuild": "npm test && npm run clean && mkdir -p ./dist",
     "pretest": "npm run lint",
     "test": "npm run test:node && npm run test:browser",
