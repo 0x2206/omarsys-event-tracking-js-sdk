@@ -7,8 +7,8 @@
   "dependencies": {
     "axios": "^0.5.4",
     "bower": "^1.4.1",
-    "cookie-cutter": "^0.1.1",
-    "cookie-cutter-shim": "file:src/shims/cookie-cutter-shim",
+    "browser-cookies": "~1.0.8",
+    "browser-cookies-shim": "~0.0.1",
     "node-uuid": "^1.4.3"
   },
   "devDependencies": {
@@ -48,7 +48,7 @@
     "node": ">=0.12.0"
   },
   "browser": {
-    "cookie-cutter-shim": "cookie-cutter"
+    "browser-cookies-shim": "browser-cookies"
   },
   "git": {
     "scripts": {
