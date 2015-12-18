@@ -2,7 +2,7 @@
     'use strict';
 
     var http = require('axios');
-    var cookie = require('cookie-cutter-shim');
+    var cookie = require('browser-cookies-shim');
     var uuid = require('node-uuid');
     var util = require('./util');
 
