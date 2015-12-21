@@ -1,6 +1,5 @@
 'use strict';
-
-var istanbul = require('browserify-istanbul');
+var webpackConfig = require('./webpack.config');
 
 module.exports = function (config) {
     config.set({
@@ -11,12 +10,12 @@ module.exports = function (config) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['mocha', 'browserify'],
+        frameworks: ['mocha'],
 
         // list of files / patterns to load in the browser
         files: [
             'node_modules/phantomjs-polyfill/bind-polyfill.js',
-            'src/**/*.js'
+            'src/**/*.spec.js'
         ],
 
 
@@ -27,7 +26,7 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'src/**/*.js': ['browserify']
+            'src/**/*.js': ['webpack']
         },
 
 
@@ -63,11 +62,15 @@ module.exports = function (config) {
         // if true, Karma captures browsers, runs the tests and exits
         singleRun: true,
 
-        browserify: {
-            debug: true,
-            transform: [istanbul({
-                ignore: ['**/*.spec.js']
-            })]
+        webpack: {
+            module: {
+                postLoaders: [{
+                    test: /\.js$/,
+                    exclude: /(?:node_modules\/|(?:\.spec|-mock)\.js$)/,
+                    loader: 'istanbul-instrumenter'
+                }]
+            },
+            plugins: webpackConfig.plugins
         },
 
         junitReporter: {
