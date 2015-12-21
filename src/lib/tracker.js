@@ -2,7 +2,7 @@
 
 var http = require('axios');
 var cookie = require('browser-cookies-shim');
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 var util = require('./util');
 
 module.exports = Tracker;
@@ -38,7 +38,7 @@ function Tracker(id) {
     // Create tracking cookie
     if (!cookieExists(this.config.cookieName)) {
         cookie.set(this.config.cookieName, uuid.v4(), {
-            expires: new Date(4242, 12, 30, 23, 59, 59).toUTCString()
+            expires: new Date(4242, 12, 30, 23, 59, 59)
         });
     }
 }
@@ -172,7 +172,7 @@ function trackPageView(payload) {
 function cookieExists(cookieName) {
     // That's not entirely true as cookie can have undefined value
     // but we treat it as non existent in that case.
-    return cookie.get(cookieName) !== undefined;
+    return cookie.get(cookieName) !== null;
 }
 
 /**
