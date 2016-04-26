@@ -30,13 +30,14 @@
     "phantomjs-polyfill": "0.0.1",
     "uglify-js": "2.6.1",
     "webpack": "1.12.9",
-    "socket.io": "~1.3.7"
+    "socket.io": "~1.3.7",
+    "yargs": "~4.6.0"
   },
   "scripts": {
     "build": "npm run build:lib && npm run build:loader && npm run build:plugins",
     "build:lib": "webpack",
     "build:loader": "uglifyjs -c -m -o ./dist/loader.min.js ./src/loader.js",
-    "build:plugins": "uglifyjs -c -m -o ./dist/plugin/load-external-script.min.js ./src/plugin/load-external-script.js",
+    "build:plugins": "./bin/uglifyMultiple -i ./src/plugin/ -o ./dist/plugin",
     "clean": "rm -rf ./dist",
     "distribute": "distribute",
     "lint": "eslint ./src",
