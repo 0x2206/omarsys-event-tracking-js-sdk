@@ -17,10 +17,11 @@ var defaultConfig = {
 /**
  * @constructor
  * @param {String} id
+ * @param {Object} plugins
  *
  * @throws
  */
-function Tracker(id) {
+function Tracker(id, plugins) {
     if (!util.isString(id)) {
         throw new TypeError('`id` has to be a string');
     }
@@ -34,6 +35,7 @@ function Tracker(id) {
     this.identity = {};
     this.uid = null;
     this.xhr = http;
+    this.plugins = plugins || {};
 
     // Create tracking cookie
     if (!cookieExists(this.config.cookieName)) {
@@ -140,7 +142,7 @@ function track(eventName, eventPayload) {
             response.data.actions.forEach(function (action) {
                 if (action.type === 'javascript') {
                     // Store eval results
-                    response.evalResults.push(eval(action.code)); // eslint-disable-line no-eval
+                    response.evalResults.push(evalInContext(action.code));
                 }
             });
         }
@@ -152,6 +154,12 @@ function track(eventName, eventPayload) {
 
         return response;
     });
+
+    function evalInContext(js) {
+        var tracker = self.plugins; // accessible in eval
+
+        return eval(js); // eslint-disable-line no-eval
+    }
 }
 
 /**

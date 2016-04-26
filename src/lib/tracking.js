@@ -8,10 +8,13 @@ module.exports = {
 
 /**
  * @param  {String}  id
+ * @param  {Object}  [plugins] List of additional plugins available to {Tracker}
  * @param  {Object}  [config] Configuration object expected by {Tracker} instance
  * @return {Tracker}
  */
-function createTracker(id, config) {
+function createTracker(id, plugins, config) {
     config = config || {};
-    return new Tracker(id).configure(config);
+    plugins = plugins || {};
+
+    return new Tracker(id, plugins).configure(config);
 }

@@ -33,14 +33,43 @@ handleQueuedEvents();
  */
 function handleQueuedEvents() {
     if (global.__ctet) { // eslint-disable-line no-underscore-dangle
+
+        global.__ctet.libraryLoadedCallback = (function () {
+            var callback = global.__ctet.libraryLoadedCallback;
+
+            return function () {
+                callback();
+                replaceStubs();
+            }
+        })();
+
+        replaceStubs();
+    }
+
+    /**
+     * Replaces existing tracker stubs with actual tracker instances, executes queued operations.
+     */
+    function replaceStubs() {
+        if (!haveLibrariesLoaded()) {
+            return; // Loading more libraries
+        }
+
+        global.__ctet.libraryLoadedCallback = function () {};
         global.__ctet.queue.forEach(function (trackerStub) { // eslint-disable-line no-underscore-dangle
             var tracker = global[trackerStub.id];
 
             if (!(tracker instanceof Tracker)) {
-                global[trackerStub.id] = tracker = new Tracker(trackerStub.id);
+                global[trackerStub.id] = tracker = new Tracker(trackerStub.id, global.__ctet.plugins);
             }
 
             tracker[trackerStub.action.fname].apply(tracker, trackerStub.action.args);
         });
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    function haveLibrariesLoaded() {
+        return global.__ctet.librariesTotal === global.__ctet.librariesLoaded;
     }
 }
