@@ -17,7 +17,7 @@ var defaultConfig = {
 /**
  * @constructor
  * @param {String} id
- * @param {Object} plugins
+ * @param {Object} [plugins] List of plugins (name-indexed)
  *
  * @throws
  */
@@ -158,7 +158,13 @@ function track(eventName, eventPayload) {
     function evalInContext(js) {
         var tracker = self.plugins; // accessible in eval
 
-        return eval(js); // eslint-disable-line no-eval
+        try {
+            return eval(js); // eslint-disable-line no-eval
+        } catch (e) {
+            console.error('drop_javascript: %s', e.message);
+
+            return '';
+        }
     }
 }
 

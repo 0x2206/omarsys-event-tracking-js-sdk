@@ -5,7 +5,11 @@ var Tracker = require('./lib/tracker.js');
 // Browserify exposes `window` as `global`
 global.CherryTechEventTracking = module.exports = require('./lib/tracking.js');
 
-handleQueuedEvents();
+if (global.__ctet) { // eslint-disable-line no-underscore-dangle
+    bootstrapWithLoader();
+} else {
+    bootstrapWithoutLoader();
+}
 
 /**
  * Handles queued events when including tracking lib asynchronously but invoking
@@ -31,45 +35,54 @@ handleQueuedEvents();
  *     - `action.fname` is a name of one of functions exposed by Tracker API
  *     - `action.args` is array of arguments passed to that function
  */
-function handleQueuedEvents() {
-    if (global.__ctet) { // eslint-disable-line no-underscore-dangle
+function bootstrapWithLoader() {
+    global.CherryTechEventTracking.setPlugins(global.__ctet.plugins);
+    global.__ctet.libraryLoadedCallback = (function () {
+        var callback = global.__ctet.libraryLoadedCallback;
 
-        global.__ctet.libraryLoadedCallback = (function () {
-            var callback = global.__ctet.libraryLoadedCallback;
+        return function () {
+            callback();
+            replaceStubs();
+        }
+    })();
 
-            return function () {
-                callback();
-                replaceStubs();
-            }
-        })();
+    replaceStubs();
+}
 
-        replaceStubs();
+/**
+ * Bootstraps the application in sync mode (Angular, node, sync script loading)
+ */
+function bootstrapWithoutLoader() {
+    global.__ctet = {
+        plugins: {}
+    };
+
+    global.CherryTechEventTracking.setPlugins(global.__ctet.plugins);
+}
+
+/**
+ * Replaces existing tracker stubs with actual tracker instances, executes queued operations.
+ */
+function replaceStubs() {
+    if (!haveLibrariesLoaded()) {
+        return; // Loading more libraries
     }
 
-    /**
-     * Replaces existing tracker stubs with actual tracker instances, executes queued operations.
-     */
-    function replaceStubs() {
-        if (!haveLibrariesLoaded()) {
-            return; // Loading more libraries
+    global.__ctet.libraryLoadedCallback = function () {};
+    global.__ctet.queue.forEach(function (trackerStub) { // eslint-disable-line no-underscore-dangle
+        var tracker = global[trackerStub.id];
+
+        if (!(tracker instanceof Tracker)) {
+            global[trackerStub.id] = tracker = new Tracker(trackerStub.id, global.__ctet.plugins);
         }
 
-        global.__ctet.libraryLoadedCallback = function () {};
-        global.__ctet.queue.forEach(function (trackerStub) { // eslint-disable-line no-underscore-dangle
-            var tracker = global[trackerStub.id];
+        tracker[trackerStub.action.fname].apply(tracker, trackerStub.action.args);
+    });
+}
 
-            if (!(tracker instanceof Tracker)) {
-                global[trackerStub.id] = tracker = new Tracker(trackerStub.id, global.__ctet.plugins);
-            }
-
-            tracker[trackerStub.action.fname].apply(tracker, trackerStub.action.args);
-        });
-    }
-
-    /**
-     * @returns {boolean}
-     */
-    function haveLibrariesLoaded() {
-        return global.__ctet.librariesTotal === global.__ctet.librariesLoaded;
-    }
+/**
+ * @returns {boolean}
+ */
+function haveLibrariesLoaded() {
+    return global.__ctet.librariesTotal === global.__ctet.librariesLoaded;
 }

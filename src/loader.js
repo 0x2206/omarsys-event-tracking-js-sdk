@@ -13,6 +13,7 @@
  * @param {String[]}  trackers     Collection of strings representing trackers' unique identifiers
  * @param {String}    cdnUrl       URL used to load full tracking lib
  * @param {String}    endpointUrl  API endpoint used by all trackers
+ * @param {String[]}  [pluginUrls] URLs to additional plugins to load
  */
 (function (trackers, cdnUrl, endpointUrl, pluginUrls) {
     'use strict';

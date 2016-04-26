@@ -37,7 +37,7 @@
     "build": "npm run build:lib && npm run build:loader && npm run build:plugins",
     "build:lib": "webpack",
     "build:loader": "uglifyjs -c -m -o ./dist/loader.min.js ./src/loader.js",
-    "build:plugins": "./bin/uglifyMultiple -i ./src/plugin/ -o ./dist/plugin",
+    "build:plugins": "./bin/uglify-multiple -i ./src/plugin/ -o ./dist/plugin",
     "clean": "rm -rf ./dist",
     "distribute": "distribute",
     "lint": "eslint ./src",
