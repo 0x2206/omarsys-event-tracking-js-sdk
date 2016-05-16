@@ -1,18 +1,34 @@
 'use strict';
 
-(function () {
-    window.__ctet.plugins.loadScript = loadScript;
+var util = require('./util');
 
-    function loadScript(src, callback) {
-        var doc = document,
-            script = doc.createElement('script');
+module.exports = loadScript;
+
+function loadScript(src, callback) {
+    var doc = document,
+        script;
+
+    if (!util.isString(src)) {
+        throw new TypeError('`src` has to be a string');
+    }
+
+    if (util.isEmpty(src)) {
+        throw new TypeError('`src` cannot be empty');
+    }
+
+    if (!callback || 'function' != typeof callback) {
+        callback = null;
+    }
+
+    script = createScript(src.trim(), callback);
+    doc.getElementsByTagName('head')[0].appendChild(script);
+
+    function createScript(src, callback) {
+        var script = doc.createElement('script');
 
         script.type = 'text/javascript';
         script.async = true;
-
-        if (!callback || 'function' != typeof callback) {
-            callback = null;
-        }
+        script.src = src;
 
         if (undefined !== script.onreadystatechange) {
             script.onreadystatechange = function () {
@@ -30,8 +46,7 @@
             script.onerror = removeScript;
         }
 
-        script.src = src;
-        doc.getElementsByTagName('head')[0].appendChild(script);
+        return script;
 
         function invokeCallback() {
             if (callback) {
@@ -47,4 +62,4 @@
             }
         }
     }
-})();
+}

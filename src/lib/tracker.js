@@ -36,6 +36,7 @@ function Tracker(id, plugins) {
     this.uid = null;
     this.xhr = http;
     this.plugins = plugins || {};
+    this.plugins.loadScript = require('./load-external-script');
 
     // Create tracking cookie
     if (!cookieExists(this.config.cookieName)) {
