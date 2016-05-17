@@ -57,10 +57,6 @@ describe('Tracker', function () {
             assert.strictEqual(trackerInstance.uid, null);
         });
 
-        it('should add default plugins', function () {
-            assert.strictEqual(trackerInstance.plugins.hasOwnProperty('loadScript'), true);
-        });
-
         it('should have registered plugin', function () {
             assert.strictEqual(trackerInstance.plugins.hasOwnProperty('square'), true);
         });

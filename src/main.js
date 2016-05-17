@@ -1,6 +1,7 @@
 'use strict';
 
 var Tracker = require('./lib/tracker.js');
+var loadScript = require('./load-external-script');
 
 // Browserify exposes `window` as `global`
 global.CherryTechEventTracking = module.exports = require('./lib/tracking.js');
@@ -36,6 +37,7 @@ if (global.__ctet) { // eslint-disable-line no-underscore-dangle
  *     - `action.args` is array of arguments passed to that function
  */
 function bootstrapWithLoader() {
+    bootstrapDefaultPlugins();
     global.CherryTechEventTracking.setPlugins(global.__ctet.plugins);
     global.__ctet.libraryLoadedCallback = (function () {
         var callback = global.__ctet.libraryLoadedCallback;
@@ -56,6 +58,7 @@ function bootstrapWithoutLoader() {
     global.__ctet = {
         plugins: {}
     };
+    bootstrapDefaultPlugins();
 
     global.CherryTechEventTracking.setPlugins(global.__ctet.plugins);
 }
@@ -85,4 +88,8 @@ function replaceStubs() {
  */
 function haveLibrariesLoaded() {
     return global.__ctet.librariesTotal === global.__ctet.librariesLoaded;
+}
+
+function bootstrapDefaultPlugins() {
+    global.__ctet.plugins.loadScript = loadScript;
 }
