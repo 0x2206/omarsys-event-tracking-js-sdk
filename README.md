@@ -29,6 +29,6 @@ var Tracking = require('cherrytech-event-tracking-js-sdk');
 
 * To test `npm test`.
 * To build library and loader `npm run build`.
-* To prepare for distribution `npm run distribute -- --bump=[major, minor, patch]`. _NOTE_: Application will not be rebuilt automatically.
+* To prepare for distribution `npm run release [major, minor, patch]`. _NOTE_: Application will not be rebuilt automatically.
 * Follow [commit messages guide line](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md#-git-commit-guidelines).
 * Package follows [Semantic Versioning](http://semver.org/) rules.

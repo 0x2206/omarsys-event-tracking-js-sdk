@@ -12,7 +12,7 @@
     "uuid": "2.0.1"
   },
   "devDependencies": {
-    "ct-distribute": "git+ssh://git@stash.cherrytech.com:7999/bow/ct-distribute.git#0.1.0",
+    "ct-distribute": "git+ssh://git@stash.cherrytech.com:7999/bow/ct-distribute.git#1.0.0",
     "eslint": "1.10.3",
     "exports-loader": "0.6.2",
     "git-scripts": "0.2.1",
@@ -36,7 +36,7 @@
     "build:lib": "webpack",
     "build:loader": "uglifyjs -c -m -o ./dist/loader.min.js ./src/loader.js",
     "clean": "rm -rf ./dist",
-    "distribute": "distribute",
+    "release": "release",
     "lint": "eslint ./src",
     "prebuild": "npm test && npm run clean && mkdir ./dist",
     "pretest": "npm run lint",
