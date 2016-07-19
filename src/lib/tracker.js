@@ -62,24 +62,24 @@ function configure(options) {
 }
 
 /**
- * @param  {String}  uid
+ * @param  {String}  [uid]
  * @param  {Object}  [identificationPayload]
  * @return {Tracker}
  */
 function identify(uid, identificationPayload) {
-    if (!util.isString(uid)) {
-        throw new TypeError('`uid` has to be a string');
+    if (util.isString(uid)) {
+        uid = uid.trim();
     }
 
-    if (util.isEmpty(uid)) {
-        throw new TypeError('`uid` cannot be empty');
+    if (!util.isString(uid) && !util.isEmpty(uid)) {
+        throw new TypeError('`uid` has to be a string');
     }
 
     if (util.isDefined(identificationPayload) && !util.isPlainObject(identificationPayload)) {
         throw new TypeError('`identificationPayload` has to be a plain object');
     }
 
-    this.uid = uid.trim();
+    this.uid = util.isEmpty(uid) ? null : uid;
 
     if (util.isDefined(identificationPayload)) {
         this.identity = util.merge([this.identity, identificationPayload]);

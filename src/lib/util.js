@@ -47,7 +47,7 @@ function isEmpty(value) {
         return value.length < 1;
     }
 
-    if (typeof value === 'object' && value !== null) {
+    if (typeof value === 'object' && value !== null && value.constructor !== Date) {
         return Object.getOwnPropertyNames(value).length < 1;
     }
 
