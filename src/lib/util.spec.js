@@ -86,6 +86,10 @@ describe('util', function () {
             assert.strictEqual(util.isEmpty([1, 2, 3]), false);
             assert.strictEqual(util.isEmpty(['a', 'b', 'c']), false);
         });
+
+        it('should return false when Date object is passed', function () {
+            assert.strictEqual(util.isEmpty(new Date()), false);
+        });
     });
 
     describe('#isPlainObject()', function () {
