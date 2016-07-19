@@ -133,23 +133,36 @@ describe('Tracker', function () {
             assert.notStrictEqual(trackerInstance.identify('uid'), t);
         });
 
-        it('should throw on non string `uid`', function () {
-            assert.throws(function () { trackerInstance.identify(true); });
-            assert.throws(function () { trackerInstance.identify(42); });
-            assert.throws(function () { trackerInstance.identify(undefined); });
-            assert.throws(function () { trackerInstance.identify([]); });
-            assert.throws(function () { trackerInstance.identify({}); });
-            assert.throws(function () { trackerInstance.identify(/lol/); });
-            assert.throws(function () { trackerInstance.identify(new Date()); });
+        it('should accept empty `uid`', function () {
+            assert.doesNotThrow(function () { trackerInstance.identify(); });
+            assert.doesNotThrow(function () { trackerInstance.identify(undefined); });
+            assert.doesNotThrow(function () { trackerInstance.identify(null); });
+            assert.doesNotThrow(function () { trackerInstance.identify(''); });
+            assert.doesNotThrow(function () { trackerInstance.identify([]); });
+            assert.doesNotThrow(function () { trackerInstance.identify({}); });
+            assert.doesNotThrow(function () { trackerInstance.identify(' \t \n '); });
         });
 
-        it('should throw on `uid` being an empty string', function () {
-            assert.throws(function () { trackerInstance.identify(' \t \n '); });
+        it('should throw on non string `uid`', function () {
+            assert.throws(function () { trackerInstance.identify(true); });
+            assert.throws(function () { trackerInstance.identify(false); });
+            assert.throws(function () { trackerInstance.identify(0); });
+            assert.throws(function () { trackerInstance.identify(42); });
+            assert.throws(function () { trackerInstance.identify(/lol/); });
+            assert.throws(function () { trackerInstance.identify(new Date()); });
         });
 
         it('should trim `uid`', function () {
             trackerInstance.identify(' \t \n uid \n \t ');
             assert.strictEqual(trackerInstance.uid, 'uid');
+        });
+
+        it('passing empty `uid` should reset internal `uid`', function () {
+            assert.strictEqual(trackerInstance.uid, null);
+            trackerInstance.identify('id');
+            assert.strictEqual(trackerInstance.uid, 'id');
+            trackerInstance.identify([]);
+            assert.strictEqual(trackerInstance.uid, null);
         });
 
         it('should throw on `identificationPayload` being non plain object (if it is defined)', function () {
@@ -181,6 +194,17 @@ describe('Tracker', function () {
                 .track('e1')
                 .then(function (response) {
                     assert.strictEqual(response.config.params.uid, 'test_uid');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should skip `uid` when making XHR call with undefined `uid` passed beforehand', function (done) {
+            trackerInstance
+                .identify(null, {data: 'data'})
+                .track('e1')
+                .then(function ok(response) {
+                    assert.strictEqual(response.config.params.hasOwnProperty('uid'), false);
                     done();
                 })
                 .catch(done);
