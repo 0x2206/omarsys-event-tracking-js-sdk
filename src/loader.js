@@ -13,21 +13,37 @@
  * @param {String[]}  trackers     Collection of strings representing trackers' unique identifiers
  * @param {String}    cdnUrl       URL used to load full tracking lib
  * @param {String}    endpointUrl  API endpoint used by all trackers
+ * @param {String[]}  [pluginUrls] URLs to additional plugins to load
  */
-(function (trackers, cdnUrl, endpointUrl) {
+(function (trackers, cdnUrl, endpointUrl, pluginUrls) {
     'use strict';
-
-    trackers = trackers || [];
 
     var win = window,
         doc = document,
-        script = doc.createElement('script'),
         slice = Array.prototype.slice,
         handle = '__ctet';
 
-    win[handle] = {
-        queue: []
-    };
+    (function init() {
+        trackers = trackers || [];
+        pluginUrls = pluginUrls || [];
+
+        win[handle] = {
+            queue: [],
+            librariesLoaded: 0,
+            librariesTotal: 1 + pluginUrls.length,
+            libraryLoadedCallback: libraryLoadedCallback,
+            plugins: {}
+        };
+
+        // Add TrackerStub instances to global window object
+        trackers.forEach(function (trackerName) {
+            win[trackerName] = new TrackerStub(trackerName).configure({ apiEndpoint: endpointUrl });
+        });
+
+        [cdnUrl]
+            .concat(pluginUrls)
+            .forEach(loadLibrary);
+    })();
 
     /**
      * @constructor
@@ -55,13 +71,47 @@
         });
     }
 
-    // Add TrackerStub instances to global window object
-    trackers.forEach(function (trackerName) {
-        win[trackerName] = new TrackerStub(trackerName).configure({ apiEndpoint: endpointUrl });
-    });
+    /**
+     * Callback
+     * Marks library as loaded
+     */
+    function libraryLoadedCallback() {
+        win[handle].librariesLoaded++;
+    }
 
-    // Async load tracking library
-    script.async = 1;
-    script.src = cdnUrl;
-    doc.getElementsByTagName('head')[0].appendChild(script);
+    /**
+     * Loads external JS script.
+     *
+     * @param {String} url
+     */
+    function loadLibrary(url) {
+        var script = doc.createElement('script');
+        // Async load tracking library
+        script.async = 1;
+        script.src = url;
+        doc.getElementsByTagName('head')[0].appendChild(script);
+
+        if (undefined !== script.onreadystatechange) {
+            script.onreadystatechange = function () {
+                if (4 === this.readyState || 'complete' === this.readyState || 'loaded' === this.readyState) {
+                    win[handle].libraryLoadedCallback();
+                    removeScript();
+                }
+            };
+        } else {
+            script.onload = function (e) {
+                win[handle].libraryLoadedCallback();
+                removeScript();
+            };
+
+            script.onerror = removeScript;
+        }
+
+        function removeScript() {
+            if (script && script.parentNode) {
+                script.parentNode.removeChild(script);
+                script = null;
+            }
+        }
+    }
 }(/* ['trackerId'], '//tracking.example.com/tracking.min.js', '//tracking.example.com' */));

@@ -7,8 +7,12 @@ describe('Tracker', function () {
     var Tracker = require('./tracker');
     var trackerInstance;
 
+    var square = function (number) {
+        return number * number;
+    };
+
     beforeEach(function () {
-        trackerInstance = new Tracker('t1');
+        trackerInstance = new Tracker('t1', { square: square });
         trackerInstance.configure({ apiEndpoint: '//test_api_endpoint' });
         trackerInstance.xhr = axiosmock.create();
     });
@@ -51,6 +55,10 @@ describe('Tracker', function () {
         it('should have `uid` property that is null by default', function () {
             assert.strictEqual(trackerInstance.hasOwnProperty('uid'), true);
             assert.strictEqual(trackerInstance.uid, null);
+        });
+
+        it('should have registered plugin', function () {
+            assert.strictEqual(trackerInstance.plugins.hasOwnProperty('square'), true);
         });
     });
 
@@ -362,7 +370,7 @@ describe('Tracker', function () {
                 .catch(done);
         });
 
-        it('should evaluate returned JavaScipt code', function (done) {
+        it('should evaluate returned JavaScript code', function (done) {
             trackerInstance.xhr = axiosmock.createWithResponseData({
                 actions: [{
                     type: 'javascript',
@@ -374,6 +382,23 @@ describe('Tracker', function () {
                 .track('e1')
                 .then(function (response) {
                     assert.strictEqual(response.evalResults[0], 42);
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should expose plugins to evaluated JavaScript code', function (done) {
+            trackerInstance.xhr = axiosmock.createWithResponseData({
+                actions: [{
+                    type: 'javascript',
+                    code: '(function () { return tracker.square(3); })();'
+                }]
+            });
+
+            trackerInstance
+                .track('e1')
+                .then(function (response) {
+                    assert.strictEqual(response.evalResults[0], 9);
                     done();
                 })
                 .catch(done);

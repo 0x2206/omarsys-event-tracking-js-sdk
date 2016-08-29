@@ -1,0 +1,70 @@
+#!/usr/bin/env node
+
+"use strict";
+
+var fs = require('fs');
+var yargs = require('yargs');
+var uglify = require('uglify-js');
+
+var args = yargs
+    .usage('$0 -i input_dir -o output_dir [options]')
+    .describe('inputDir', 'Input directory, parses all .js files')
+    .describe('outputDir', 'Output directory, all files have their .js extension replaced with .min.js')
+    .demand(['i', 'o'])
+    .help('h')
+    .alias('i', 'inputDir')
+    .alias('o', 'outputDir')
+    .string('inputDir')
+    .string('outputDir')
+    .alias('h', 'help')
+    .wrap(80)
+    .argv;
+
+normalizeArgs(args);
+
+(function run() {
+    fs
+        .readdirSync(args.inputDir)
+        .filter(function (filename) { return /\.js$/.test(filename); })
+        .forEach(uglifyFile);
+
+    process.exit(0);
+})();
+
+/**
+ * Normalize arguments passed to script
+ *
+ * @param {Object} args
+ */
+function normalizeArgs(args) {
+    ['inputDir', 'outputDir'].forEach(function (key) {
+        args[key] = args[key].replace(/\/$/, '');
+    });
+}
+
+/**
+ * @param {String} filename
+ */
+function uglifyFile(filename) {
+    var input = args.inputDir + '/' + filename,
+        output = args.outputDir + '/' + filename.substring(0, filename.length - 3) + '.min.js',
+        code;
+
+    print('Parsing ' + input);
+
+    code = fs.readFileSync(input, 'UTF8');
+    code = uglify.minify(code, {fromString: true}).code;
+
+    fs.writeFileSync(output, code);
+
+    print('Created ' + output);
+}
+
+/**
+ * Log message to console
+ *
+ * @param {String} txt
+ */
+function print(txt) {
+    console.log("%s", txt);
+}
