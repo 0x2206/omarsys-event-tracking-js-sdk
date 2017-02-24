@@ -12,7 +12,7 @@
     "uuid": "2.0.1"
   },
   "devDependencies": {
-    "ct-distribute": "git+ssh://git@stash.cherrytech.com:7999/bow/ct-distribute.git#1.0.0",
+    "ct-distribute": "git+ssh://bitbucket.cherrytech.com:7999/bow/ct-distribute.git#1.0.0",
     "eslint": "1.10.3",
     "exports-loader": "0.6.2",
     "git-scripts": "0.2.1",
