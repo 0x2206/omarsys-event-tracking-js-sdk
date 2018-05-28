@@ -12,4 +12,13 @@ describe('Tracking', function () {
             assert.strictEqual((t instanceof Tracker), true);
         });
     });
+
+    describe('#get/setPlugins()', function () {
+        it('should get/set plugins', function () {
+            var plugins = {};
+            Tracking.setPlugins(plugins);
+            var result = Tracking.getPlugins();
+            assert.equal(result, plugins);
+        });
+    });
 });

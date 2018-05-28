@@ -2,7 +2,7 @@
 
 var http = require('axios');
 var cookie = require('browser-cookies-shim');
-var uuid = require('uuid');
+var uuidv4 = require('uuid/v4');
 var util = require('./util');
 
 module.exports = Tracker;
@@ -39,7 +39,7 @@ function Tracker(id, plugins) {
 
     // Create tracking cookie
     if (!cookieExists(this.config.cookieName)) {
-        cookie.set(this.config.cookieName, uuid.v4(), {
+        cookie.set(this.config.cookieName, uuidv4(), {
             expires: new Date(4242, 12, 30, 23, 59, 59)
         });
     }

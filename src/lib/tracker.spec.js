@@ -387,6 +387,23 @@ describe('Tracker', function () {
                 .catch(done);
         });
 
+        it('should evaluate returned JavaScript code and return empty string if it fails', function (done) {
+            trackerInstance.xhr = axiosmock.createWithResponseData({
+                actions: [{
+                    type: 'javascript',
+                    code: '(function () { throw "xcaliber"; })();'
+                }]
+            });
+
+            trackerInstance
+                .track('e1')
+                .then(function (response) {
+                    assert.strictEqual(response.evalResults[0], '');
+                    done();
+                })
+                .catch(done);
+        });
+
         it('should expose plugins to evaluated JavaScript code', function (done) {
             trackerInstance.xhr = axiosmock.createWithResponseData({
                 actions: [{
