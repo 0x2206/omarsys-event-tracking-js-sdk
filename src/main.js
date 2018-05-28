@@ -1,5 +1,6 @@
 'use strict';
 
+var global = require('system.global')();
 var Tracker = require('./lib/tracker.js');
 var loadScript = require('./load-external-script');
 

@@ -9,6 +9,7 @@
     "browser-cookies": "1.0.8",
     "browser-cookies-shim": "0.0.1",
     "es6-promise": "3.0.2",
+    "system.global": "^2.0.0",
     "uuid": "^3.2.1"
   },
   "devDependencies": {

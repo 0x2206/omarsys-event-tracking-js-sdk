@@ -6,6 +6,14 @@ module.exports = {
     output: {
         filename: './dist/tracking.min.js'
     },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                use: 'imports-loader?global=>window'
+            }
+        ]
+    },
     plugins: [
         new webpack.ProvidePlugin({
             'Promise': 'exports?global.Promise!es6-promise'

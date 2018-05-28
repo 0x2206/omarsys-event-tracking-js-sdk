@@ -1,5 +1,7 @@
 'use strict';
 
+var global = require('system.global')();
+
 module.exports = {
     getHost: getHost,
     isDefined: isDefined,
